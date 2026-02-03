@@ -15,6 +15,7 @@ if(!SESSION_SECRET){
 
 const app = express()
 
+app.use(express.json())
 app.use(session({
     secret: SESSION_SECRET,
     cookie: {
