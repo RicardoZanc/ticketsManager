@@ -1,30 +1,27 @@
 import { Request, Response } from "express";
 import { userSchema } from "./requestValidations";
 import validateRequest from "../helpers/validateRequest";
-import { createUserDTO } from "./userDTO";
+import { CreateUserDTO, UserResponse } from "./userDTO";
 import { authService } from "./authService";
 
 export const authController = {
-    signup: async (req: Request<{}, {}, createUserDTO>, res: Response) => {
+    signup: async (req: Request<{}, {}, CreateUserDTO>, res: Response) => {
        const result = await validateRequest(req, userSchema.signup)
 
         if(!result.isEmpty()){
-            return res.send(result.mapped())
+            return res.status(400).send(result.mapped())
         }
 
-        const user: createUserDTO = req.body;
+        const user: CreateUserDTO = req.body;
 
         try{
-            await authService.createUser(user)
+            const createdUser: UserResponse = await authService.createUser(user)
+            return res.status(201).send(createdUser)
         }catch(error: any){
             if(error.status){
                 return res.status(error.status).send(error.message)
             }
             res.send(error.message)
         }
-
-
-        return res.send('ok')
-
     }
 }

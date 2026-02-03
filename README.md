@@ -9,3 +9,5 @@ export const authController = {
 	functionTwo: ()=>{}
 }
 ```
+
+- Make a wrapper for services try catches
