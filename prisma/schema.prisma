@@ -40,7 +40,7 @@ model User {
   type type_user
   email String
   hashPassword String
-  isAdmin Boolean
+  isAdmin Boolean @default(false)
 
   responsible_by_tickets Ticket[] @relation("ticket_responsible_analyst")
   created_tickets Ticket[] @relation("ticket_created_by")

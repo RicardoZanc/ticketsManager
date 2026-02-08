@@ -35,5 +35,6 @@ const ensureUniqueEmail = async (email: string) => {
 
 
 export const authService = {
-    createUser
+    createUser,
+    ensureUniqueEmail
 }
