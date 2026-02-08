@@ -6,6 +6,10 @@ interface CreateUserDTO {
     password: string,
     confirmPassword: string
 }
+interface loginDTO {
+    email: string,
+    password: string
+}
 
 type UserResponse = {
     name: string,
@@ -15,5 +19,6 @@ type UserResponse = {
 
 export {
     CreateUserDTO,
+    loginDTO,
     UserResponse
 }

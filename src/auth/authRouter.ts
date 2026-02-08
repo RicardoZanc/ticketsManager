@@ -7,6 +7,7 @@ const authRouter =  Router();
 
 authRouter.post('/signup', authController.signup)
 
-authRouter.post('/login', passport.authenticate('local'), (req, res)=>res.send({logged: true}))
+authRouter.post('/login', authController.login)
+
 
 export default authRouter;

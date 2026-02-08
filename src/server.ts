@@ -4,9 +4,11 @@ import session from 'express-session'
 import passport from 'passport'
 import { getTime } from './helpers/timeHelpers'
 import apiRouter from './router'
+import { MongoStore } from 'connect-mongo'
 
 
 const SESSION_SECRET = process.env.SESSION_SECRET
+const mongoUrl = process.env.MONGO_URL
 
 if(!SESSION_SECRET){
     throw Error('No session secret defined')
@@ -22,7 +24,9 @@ app.use(session({
         maxAge: getTime.inHours(2)
     },
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    store: MongoStore.create( {mongoUrl} )
+
 }))
 
 

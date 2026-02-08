@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/lib/prisma/generated"
@@ -13,11 +12,119 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
+enum tickets_status {
+  ACTIVE
+  SOLVED
+  CANCELED
+}
+
+enum type_user {
+  USER
+  ANALYST
+}
+model Tenant {
   id String @id @default(uuid())
   name String
-  email String @unique
+  cnpj String @unique
+
+  users User[]
+  tickets Ticket[]
+  user_groups User_Group[]
+  categories Category[]
+}
+
+model User {
+  id String @id @default(uuid())
+  tenant_id String
+  name String
+  type type_user
+  email String
   hashPassword String
+  isAdmin Boolean
+
+  responsible_by_tickets Ticket[] @relation("ticket_responsible_analyst")
+  created_tickets Ticket[] @relation("ticket_created_by")
+  end_user_in_tickets Ticket[] @relation("ticket_end_user")
+
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+
+  groups User_Group[]
+
+  responsible_for_categories Analyst_Responsible_Categories[]
+
+  @@unique([tenant_id, email])
 
   @@index([email])
+}
+
+model User_Group {
+  id String @id @default(uuid())
+  tenant_id String
+  name String
+  description String
+  type_user_group type_user
+  users User[]
+  group_allowed_categories Group_Allowed_Categories[]
+
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+}
+
+//tenanttodo
+model Group_Allowed_Categories {
+  user_group_id String 
+  category_id String
+  include_childs Boolean
+
+  user_group User_Group @relation(fields: [user_group_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@id([user_group_id, category_id])
+}
+
+model Analyst_Responsible_Categories {
+  analyst_id String
+  category_id String
+  includeChilds Boolean
+
+  analyst User @relation(fields: [analyst_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@id([analyst_id, category_id])
+
+}
+
+//tenanttodo
+model Category {
+  id String @id @default(uuid())
+  tenant_id String
+  parent_category_id String?
+  name String
+
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+
+  parent_category Category? @relation("category_hierarchy",fields: [parent_category_id], references: [id])
+  childs_cathegories Category[] @relation("category_hierarchy")
+
+  tickets Ticket[]
+  allowed_groups Group_Allowed_Categories[]
+  responsible_analysts Analyst_Responsible_Categories[]
+}
+
+model Ticket {
+  id String @id @default(uuid())
+  tenant_id String
+  title String
+  code Int
+  category_id String
+  end_user_id String
+  responsible_analyst_id String
+  created_by_id String
+
+  @@unique([tenant_id, code])
+
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+  end_user User @relation("ticket_end_user", fields: [end_user_id], references: [id])
+  responsible_analyst User @relation("ticket_responsible_analyst", fields: [responsible_analyst_id], references: [id])
+  created_by User @relation("ticket_created_by", fields: [created_by_id], references: [id])
 }
