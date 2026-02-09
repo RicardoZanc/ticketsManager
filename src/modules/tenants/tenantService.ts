@@ -1,6 +1,6 @@
 import ServiceError from "../../errors/serviceError"
 import prisma from "../../lib/prisma"
-import { authService } from "../../auth/authService"
+import { Tenant } from "../../lib/prisma/generated/client"
 import { createTenantDTO } from "./tenantDTO"
 
 
@@ -15,24 +15,19 @@ const ensureUniqueCNPJ = async  (cnpj: string) => {
     }
 }
 
-const createTenant = async (tenant: createTenantDTO) => {
+const createTenant = async (tenant: Tenant) => {
 
     await ensureUniqueCNPJ(tenant.cnpj)
-    await authService.ensureUniqueEmail(tenant.firstUser.email)
-
-    const tenantToCreate = {
-            name: tenant.name,
-            cnpj: tenant.cnpj,
-            users: {
-                create: tenant.firstUser
-            }
-        }
 
    const result = await prisma.tenant.create({
-        data: tenantToCreate,
+        data: tenant,
         include: {users: true}
 
     })
 
     console.log(result)
+}
+
+export const tenantService = {
+    createTenant
 }
