@@ -1,6 +1,6 @@
-import { type_user } from "../../lib/prisma/generated/enums"
+import { type_user } from "../../lib/prisma/generated/enums";
 
-export interface createTenantDTO {
+interface createTenantDTO {
             name: string,
             cnpj: string,
             firstUser: firstUserDTO
@@ -9,7 +9,27 @@ export interface createTenantDTO {
 interface firstUserDTO {
         name: string,
         email: string,
-        hashPassword: string
-        type: type_user
-        isAdmin: boolean
+        password: string,
+        confirmPassword: string
+}
+
+interface ResponseTenant {
+    cnpj: string;
+    id: string;
+    name: string;
+    users: {
+        id: string;
+        name: string;
+        type: type_user;
+        email: string;
+        hashPassword?: string;
+        isAdmin: boolean;
+        tenant_id: string;
+    }[]
+}
+
+export {
+        createTenantDTO,
+        firstUserDTO,
+        ResponseTenant
 }

@@ -16,7 +16,7 @@ const createTenant: Schema = {
             errorMessage: 'Tenant CNPJ is required'
         },
         customSanitizer: {
-            options: value => value.replace(/\D/g, '')
+            options: value => value ? value.replace(/\D/g, '') : null
         },
         custom: {
             options: value => isValidCNPJ(value),
@@ -66,7 +66,7 @@ const createTenant: Schema = {
             errorMessage: "User password is required"
         },
         custom: {
-            options: (value, {req})=> value === req.body.password,
+            options: (value, {req})=> value === req.body.firstUser.password,
             errorMessage: "Passwords do not match"
         }
     }

@@ -33,7 +33,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use('/api', (req, res, next)=>{console.log('Chamando api router'); next()}, apiRouter)
+app.use('/api', apiRouter)
 app.use('/health', (req, res)=>{
     res.send('Ok')
 })

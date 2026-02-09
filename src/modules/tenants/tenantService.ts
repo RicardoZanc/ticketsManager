@@ -1,33 +1,47 @@
-import ServiceError from "../../errors/serviceError"
-import prisma from "../../lib/prisma"
-import { Tenant } from "../../lib/prisma/generated/client"
-import { createTenantDTO } from "./tenantDTO"
+import ServiceError from "../../errors/serviceError";
+import prisma from "../../lib/prisma";
+import { createTenantDTO, ResponseTenant } from "./tenantDTO";
+import { passwordHelper } from "../../helpers/passwordHelper";
+const ensureUniqueCNPJ = async (cnpj: string) => {
+  const tenantCount = await prisma.tenant.count({
+    where: {
+      cnpj,
+    },
+  });
+  if (tenantCount) {
+    throw new ServiceError("Tenant already exists", 406);
+  }
+};
 
+const createTenant = async (tenant: createTenantDTO) => {
+  await ensureUniqueCNPJ(tenant.cnpj);
 
-const ensureUniqueCNPJ = async  (cnpj: string) => {
-    const tenantCount = await prisma.tenant.count({
-        where: {
-            cnpj
-        }
-    })
-    if(tenantCount){
-        throw new ServiceError('Tenant already exists', 406)
-    }
-}
+  const firstUserHashPasword = await passwordHelper.encrypt(
+    tenant.firstUser.password,
+  );
 
-const createTenant = async (tenant: Tenant) => {
+  const createdTenant: ResponseTenant = await prisma.tenant.create({
+    data: {
+      name: tenant.name,
+      cnpj: tenant.cnpj,
+      users: {
+        create: {
+          name: tenant.firstUser.name,
+          email: tenant.firstUser.email,
+          isAdmin: true,
+          type: "ANALYST",
+          hashPassword: firstUserHashPasword,
+        },
+      },
+    },
+    include: { users: true },
+  });
 
-    await ensureUniqueCNPJ(tenant.cnpj)
+  delete createdTenant.users[0].hashPassword;
 
-   const result = await prisma.tenant.create({
-        data: tenant,
-        include: {users: true}
-
-    })
-
-    console.log(result)
-}
+  return createdTenant;
+};
 
 export const tenantService = {
-    createTenant
-}
+  createTenant,
+};
