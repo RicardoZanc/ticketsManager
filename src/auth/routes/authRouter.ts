@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { authController } from "./authController";
+import { authController } from "../controllers/authController";
 import '../strategies/local-strategy'
-import passport from "passport";
 
 const authRouter =  Router();
 
