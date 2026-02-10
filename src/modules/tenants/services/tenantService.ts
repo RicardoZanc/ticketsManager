@@ -1,7 +1,9 @@
-import ServiceError from "../../errors/serviceError";
-import prisma from "../../lib/prisma";
-import { createTenantDTO, ResponseTenant } from "./tenantDTO";
-import { passwordHelper } from "../../helpers/passwordHelper";
+import ServiceError from "../../../errors/serviceError";
+import prisma from "../../../lib/prisma";
+import { createTenantDTO, ResponseTenant } from "../types/tenantDTO";
+import { passwordHelper } from "../../../helpers/passwordHelper";
+
+
 const ensureUniqueCNPJ = async (cnpj: string) => {
   const tenantCount = await prisma.tenant.count({
     where: {

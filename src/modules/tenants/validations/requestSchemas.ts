@@ -1,5 +1,5 @@
 import { Schema } from "express-validator";
-import { isValidCNPJ } from "../../utils/commonValidators";
+import { isValidCNPJ } from "../../../utils/commonValidators";
 
 
 const createTenant: Schema = {
@@ -72,6 +72,6 @@ const createTenant: Schema = {
     }
 }
 
-export const tenantSchema = {
+export const requestSchemas = {
     createTenant
 }

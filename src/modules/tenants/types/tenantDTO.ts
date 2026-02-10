@@ -1,4 +1,5 @@
-import { type_user } from "../../lib/prisma/generated/enums";
+import { type_user } from "../../../lib/prisma/generated/enums";
+import { baseDTO } from "../../../types/baseDTO";
 
 interface createTenantDTO {
             name: string,

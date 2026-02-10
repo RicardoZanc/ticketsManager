@@ -5,6 +5,7 @@ import passport from 'passport'
 import { getTime } from './helpers/timeHelpers'
 import apiRouter from './router'
 import { MongoStore } from 'connect-mongo'
+import { errorHandler } from './middlewares/errorHandler'
 
 
 const SESSION_SECRET = process.env.SESSION_SECRET
@@ -40,6 +41,7 @@ app.use('/health', (req, res)=>{
 
 const PORT = process.env.PORT || 3000
 
+app.use(errorHandler)
 
 app.listen(PORT, ()=>{
     console.log('Running in port: ', PORT)
