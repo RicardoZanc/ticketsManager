@@ -3,7 +3,7 @@ import { userSchema } from "./requestValidations";
 import validateRequest from "../helpers/validateRequest";
 import { CreateUserDTO, loginDTO, UserResponse } from "./userDTO";
 import { authService } from "./authService";
-import "../strategies/local-strategy";
+import "./strategies/local-strategy";
 import passport from "passport";
 
 export const authController = {
