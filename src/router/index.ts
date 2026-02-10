@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authRouter from "../auth/authRouter";
+import authRouter from "../auth/routes/authRouter";
 import tenantRouter from "../modules/tenants/routes/tenantRouter";
 
 const apiRouter = Router()

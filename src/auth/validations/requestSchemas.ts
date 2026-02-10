@@ -1,6 +1,15 @@
 import { Schema } from "express-validator";
+import { type_user } from "../../lib/prisma/generated/enums";
 
 const signup: Schema = {
+    tenant_id: {
+        isString: {
+            errorMessage: "Tenant Id must be an UUID"
+        },
+        notEmpty: {
+            errorMessage: "Tenant Id is required"
+        }
+    },
     name: {
         isString: {
             errorMessage: "User name must be an string"
@@ -22,6 +31,23 @@ const signup: Schema = {
         },
         notEmpty: {
             errorMessage: "User email is required"
+        }
+    },
+    type: {
+        custom: {
+            options: value => Object.values(type_user).includes(value),
+            errorMessage: "Invalid user type"
+        },
+        notEmpty: {
+            errorMessage: "User type is required"
+        }
+    },
+    isAdmin: {
+        isBoolean: {
+            errorMessage: "isAdmin must be a bool number"
+        },
+        notEmpty: {
+            errorMessage: "isAdmin is required"
         }
     },
     password: {

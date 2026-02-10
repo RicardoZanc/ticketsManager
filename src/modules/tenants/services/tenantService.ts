@@ -2,6 +2,7 @@ import ServiceError from "../../../errors/serviceError";
 import prisma from "../../../lib/prisma";
 import { createTenantDTO, ResponseTenant } from "../types/tenantDTO";
 import { passwordHelper } from "../../../helpers/passwordHelper";
+import { NotFoundError } from "../../../errors/NotFoundError";
 
 
 const ensureUniqueCNPJ = async (cnpj: string) => {
@@ -14,6 +15,18 @@ const ensureUniqueCNPJ = async (cnpj: string) => {
     throw new ServiceError("Tenant already exists", 406);
   }
 };
+
+const ensureTenantExists = async (id: string)=>{
+  const tenantCount = await prisma.tenant.count({
+    where:{
+      id
+    }
+  })
+  if(!tenantCount){
+    throw new NotFoundError('Tenant not Found')
+  }
+
+}
 
 const createTenant = async (tenant: createTenantDTO) => {
   await ensureUniqueCNPJ(tenant.cnpj);
@@ -47,3 +60,7 @@ const createTenant = async (tenant: createTenantDTO) => {
 export const tenantService = {
   createTenant,
 };
+
+export {
+  ensureTenantExists
+}
