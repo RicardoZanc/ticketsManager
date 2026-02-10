@@ -41,5 +41,5 @@ const ensureUniqueEmailOnTenant = async (email: string, tenant_id: string) => {
 
 export const authService = {
     createUser,
-    ensureUniqueEmail: ensureUniqueEmailOnTenant
+    ensureUniqueEmailOnTenant
 }

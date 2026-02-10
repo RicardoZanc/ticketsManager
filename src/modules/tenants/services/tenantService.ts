@@ -1,8 +1,8 @@
-import ServiceError from "../../../errors/serviceError";
 import prisma from "../../../lib/prisma";
 import { createTenantDTO, ResponseTenant } from "../types/tenantDTO";
 import { passwordHelper } from "../../../helpers/passwordHelper";
 import { NotFoundError } from "../../../errors/NotFoundError";
+import { ConflictError } from "../../../errors/ConflictError";
 
 
 const ensureUniqueCNPJ = async (cnpj: string) => {
@@ -12,7 +12,7 @@ const ensureUniqueCNPJ = async (cnpj: string) => {
     },
   });
   if (tenantCount) {
-    throw new ServiceError("Tenant already exists", 406);
+    throw new ConflictError("Tenant already exists");
   }
 };
 
